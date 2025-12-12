@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: frontend
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: wordpress
+        image: docker.io/library/wordpress:6.5-apache
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: mariadb
+        - name: WORDPRESS_DB_USER
+          value: wpuser
+        - name: WORDPRESS_DB_PASSWORD
+          value: wppass
+        - name: WORDPRESS_DB_NAME
+          value: wordpress
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: wordpress-data
+          mountPath: /var/www/html
+        securityContext:
+          allowPrivilegeEscalation: false
+      volumes:
+      - name: wordpress-data
+        persistentVolumeClaim:
+          claimName: wordpress-pvc

@@ -1,0 +1,7 @@
+resources:
+  - wordpress-deployment.yaml
+  - wordpress-service.yaml
+  - wordpress-pvc.yaml
+  - mariadb-deployment.yaml
+  - mariadb-service.yaml
+  - mariadb-pvc.yaml

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  labels:
+    app: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mariadb
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: mariadb
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: mariadb
+        image: docker.io/library/mariadb:10.6
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: examplepassword
+        - name: MYSQL_DATABASE
+          value: wordpress
+        - name: MYSQL_USER
+          value: wpuser
+        - name: MYSQL_PASSWORD
+          value: wppass
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mariadb-data
+          mountPath: /var/lib/mysql
+        securityContext:
+          allowPrivilegeEscalation: false
+      volumes:
+      - name: mariadb-data
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
