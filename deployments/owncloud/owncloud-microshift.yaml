@@ -138,7 +138,7 @@ spec:
               drop: ["ALL"]
           volumeMounts:
             - name: owncloud-data
-              mountPath: /var/www/owncloud
+              mountPath: /mnt/data
       volumes:
         - name: owncloud-data
           persistentVolumeClaim:
