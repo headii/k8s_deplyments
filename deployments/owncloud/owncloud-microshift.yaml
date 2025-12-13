@@ -6,7 +6,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: owncloud-data
+  name: mariadb-data
   namespace: owncloud
 spec:
   accessModes:
@@ -18,7 +18,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mariadb-data
+  name: owncloud-data
   namespace: owncloud
 spec:
   accessModes:
@@ -52,13 +52,13 @@ spec:
           ports:
             - containerPort: 3306
           env:
-            - name: MARIADB_DATABASE
+            - name: MYSQL_DATABASE
               value: owncloud
-            - name: MARIADB_USER
+            - name: MYSQL_USER
               value: owncloud
-            - name: MARIADB_PASSWORD
+            - name: MYSQL_PASSWORD
               value: owncloudpass
-            - name: MARIADB_ROOT_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
               value: rootpass
           resources:
             requests:
@@ -73,7 +73,7 @@ spec:
               drop: ["ALL"]
           volumeMounts:
             - name: mariadb-data
-              mountPath: /bitnami/mariadb
+              mountPath: /var/lib/mysql
       volumes:
         - name: mariadb-data
           persistentVolumeClaim:
@@ -112,7 +112,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: owncloud
-          image: docker.io/owncloud/server:10.15
+          image: docker.io/owncloud/server:10.14
           ports:
             - containerPort: 8080
           env:
