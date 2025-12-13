@@ -1,0 +1,166 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: owncloud
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: owncloud-data
+  namespace: owncloud
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-data
+  namespace: owncloud
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: owncloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: mariadb
+          image: docker.io/bitnami/mariadb:11.4
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MARIADB_DATABASE
+              value: owncloud
+            - name: MARIADB_USER
+              value: owncloud
+            - name: MARIADB_PASSWORD
+              value: owncloudpass
+            - name: MARIADB_ROOT_PASSWORD
+              value: rootpass
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /bitnami/mariadb
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: mariadb-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  namespace: owncloud
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: owncloud
+  namespace: owncloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: owncloud
+  template:
+    metadata:
+      labels:
+        app: owncloud
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: owncloud
+          image: docker.io/owncloud/server:10.14
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OWNCLOUD_DOMAIN
+              value: localhost
+            - name: OWNCLOUD_DB_TYPE
+              value: mysql
+            - name: OWNCLOUD_DB_NAME
+              value: owncloud
+            - name: OWNCLOUD_DB_USERNAME
+              value: owncloud
+            - name: OWNCLOUD_DB_PASSWORD
+              value: owncloudpass
+            - name: OWNCLOUD_DB_HOST
+              value: mariadb
+            - name: OWNCLOUD_ADMIN_USERNAME
+              value: admin
+            - name: OWNCLOUD_ADMIN_PASSWORD
+              value: adminpassword
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: owncloud-data
+              mountPath: /mnt/data
+      volumes:
+        - name: owncloud-data
+          persistentVolumeClaim:
+            claimName: owncloud-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: owncloud
+  namespace: owncloud
+spec:
+  type: NodePort
+  selector:
+    app: owncloud
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30082
