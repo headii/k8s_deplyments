@@ -2,8 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wordpress
-  labels:
-    app: wordpress
+  namespace: wordpress
 spec:
   replicas: 1
   selector:
@@ -16,33 +15,48 @@ spec:
         app: wordpress
         tier: frontend
     spec:
-      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+
       containers:
-      - name: wordpress
-        image: docker.io/library/wordpress:6.5-apache
-        env:
-        - name: APACHE_RUN_PORT
-          value: "8080"
-        - name: WORDPRESS_DB_HOST
-          value: mariadb
-        - name: WORDPRESS_DB_USER
-          value: wpuser
-        - name: WORDPRESS_DB_PASSWORD
-          value: wppass
-        - name: WORDPRESS_DB_NAME
-          value: wordpress
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        - name: wordpress-data
-          mountPath: /var/www/html
-        securityContext:
-          allowPrivilegeEscalation: false
-          runAsUser: 1001
-          capabilities:
-            drop:
-              - ALL
+        - name: wordpress
+          image: docker.io/library/wordpress:6.5-apache
+
+          command:
+            - /bin/bash
+            - -c
+            - |
+              sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf
+              sed -i 's/:80/:8080/' /etc/apache2/sites-enabled/000-default.conf
+              exec apache2-foreground
+
+          ports:
+            - containerPort: 8080
+
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: mariadb
+            - name: WORDPRESS_DB_USER
+              value: wpuser
+            - name: WORDPRESS_DB_PASSWORD
+              value: wppass
+            - name: WORDPRESS_DB_NAME
+              value: wordpress
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+
+          volumeMounts:
+            - name: wordpress-data
+              mountPath: /var/www/html
+
       volumes:
-      - name: wordpress-data
-        persistentVolumeClaim:
-          claimName: wordpress-pvc
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wordpress-pvc
