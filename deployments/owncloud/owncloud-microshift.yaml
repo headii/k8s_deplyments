@@ -107,12 +107,14 @@ spec:
         app: owncloud
     spec:
       securityContext:
+        fsGroup: 33
+        fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: owncloud
-          image: docker.io/owncloud/server:10.14
+          image: docker.io/owncloud/server:10.15
           ports:
             - containerPort: 8080
           env:
