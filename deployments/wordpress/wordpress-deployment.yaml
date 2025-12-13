@@ -30,7 +30,7 @@ spec:
         - name: WORDPRESS_DB_NAME
           value: wordpress
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         volumeMounts:
         - name: wordpress-data
           mountPath: /var/www/html
