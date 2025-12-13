@@ -108,7 +108,7 @@ spec:
     spec:
       containers:
         - name: owncloud
-          image: docker.io/library/owncloud/server:10.15
+          image: docker.io/owncloud/server:10.15
           ports:
             - containerPort: 8080
           env:
