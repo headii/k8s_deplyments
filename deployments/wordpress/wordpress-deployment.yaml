@@ -20,7 +20,7 @@ spec:
 
       containers:
         - name: wordpress
-          image: docker.io/bitnami/wordpress:6.5
+          image: docker.io/bitnami/wordpress:latest
 
           ports:
             - containerPort: 8080
