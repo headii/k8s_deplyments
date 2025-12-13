@@ -29,7 +29,6 @@ spec:
             capabilities:
               drop:
                 - ALL
-            runAsUser: 1001
 
           volumeMounts:
             - name: nginx-cache

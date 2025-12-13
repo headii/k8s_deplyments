@@ -8,10 +8,12 @@ spec:
   selector:
     matchLabels:
       app: wordpress
+      tier: frontend
   template:
     metadata:
       labels:
         app: wordpress
+        tier: frontend
     spec:
       securityContext:
         runAsNonRoot: true
