@@ -9,6 +9,6 @@ spec:
     app: nginx
   ports:
     - name: http
-      port: 80
+      port: 8080
       targetPort: 8080
       nodePort: 30088
