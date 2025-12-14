@@ -17,4 +17,4 @@ spec:
             - -c
             - |
               set -euo pipefail
-              curl -sS -f -H "Host: owncloud.apps.microshift.lan" "http://owncloud:8080/cron.php"
+              curl -sS -f -H "Host: owncloud.apps.microshift.lab" "http://owncloud:8080/cron.php"

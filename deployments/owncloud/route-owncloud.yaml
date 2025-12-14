@@ -4,7 +4,7 @@ metadata:
   name: owncloud
   namespace: owncloud
 spec:
-  host: "owncloud.apps.microshift.lan"
+  host: "owncloud.apps.microshift.lab"
   to:
     kind: Service
     name: owncloud

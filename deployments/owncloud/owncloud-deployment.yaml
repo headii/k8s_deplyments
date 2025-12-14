@@ -20,7 +20,7 @@ spec:
             - containerPort: 8080
           env:
             - name: OWNCLOUD_DOMAIN
-              value: owncloud.apps.microshift.lan
+              value: owncloud.apps.microshift.lab
             - name: OWNCLOUD_DB_TYPE
               value: mysql
             - name: OWNCLOUD_DB_HOST
