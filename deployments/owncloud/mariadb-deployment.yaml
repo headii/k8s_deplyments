@@ -46,9 +46,12 @@ spec:
             - name: mariadb-data
               mountPath: /var/lib/mysql
           readinessProbe:
-            tcpSocket:
-              port: 3306
-            initialDelaySeconds: 20
+            exec:
+              command:
+                - sh
+                - -c
+                - 'mysqladmin ping -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD'
+            initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 5
