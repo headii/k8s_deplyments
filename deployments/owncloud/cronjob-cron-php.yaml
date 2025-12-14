@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: owncloud-cron
+  namespace: owncloud
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 200
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: curl-cron
+              image: curlimages/curl:8.4.0
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -euo pipefail
+                  # call ownCloud cron.php using the cluster service and set Host to the
+                  # configured OWNCLOUD_DOMAIN so the app accepts the request
+                  curl -sS -f -H "Host: owncloud.apps.microshift.lan" "http://owncloud:8080/cron.php"
+          # run in the same namespace; no volumes required

@@ -4,10 +4,11 @@ metadata:
   name: owncloud
   namespace: owncloud
 spec:
-  type: NodePort
+  # Use ClusterIP for internal service; expose externally via an OpenShift Route
+  type: ClusterIP
   selector:
     app: owncloud
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30082
+      # nodePort removed; Route will be used to expose the service instead

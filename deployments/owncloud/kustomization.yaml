@@ -9,3 +9,6 @@ resources:
   - redis-pvc.yaml
   - redis-deployment.yaml
   - redis-service.yaml
+  - route-owncloud.yaml
+  - cronjob-cron-php.yaml
+  - job-cron-php-once.yaml

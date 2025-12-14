@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: owncloud-cron-once
+  namespace: owncloud
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: curl-cron-once
+          image: curlimages/curl:8.4.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -euo pipefail
+              curl -sS -f -H "Host: owncloud.apps.microshift.lan" "http://owncloud:8080/cron.php"
