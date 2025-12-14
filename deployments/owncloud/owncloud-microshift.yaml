@@ -129,9 +129,9 @@ spec:
             - name: OWNCLOUD_ADMIN_PASSWORD
               value: adminpass
             - name: OWNCLOUD_SKIP_CHOWN
-              value: "yes"
+              value: "true"
             - name: OWNCLOUD_SKIP_SET_PERMISSIONS
-              value: "yes"
+              value: "true"
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
