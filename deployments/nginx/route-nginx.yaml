@@ -4,6 +4,7 @@ metadata:
   name: nginx
   namespace: nginx
 spec:
+  host: "nginx.apps.microshift.lab"
   to:
     kind: Service
     name: nginx
