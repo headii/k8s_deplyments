@@ -10,5 +10,5 @@ spec:
     name: nginx
     weight: 100
   port:
-    targetPort: 8080
+    targetPort: 80
 

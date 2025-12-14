@@ -22,7 +22,7 @@ spec:
         - name: nginx
           image: nginx:1.25
           ports:
-            - containerPort: 8080
+            - containerPort: 80
 
           securityContext:
             allowPrivilegeEscalation: false
