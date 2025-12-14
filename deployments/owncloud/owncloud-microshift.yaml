@@ -132,6 +132,8 @@ spec:
               value: "true"
             - name: OWNCLOUD_SKIP_SET_PERMISSIONS
               value: "true"
+            - name: OWNCLOUD_CRON_MODE
+              value: "webcron"
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
