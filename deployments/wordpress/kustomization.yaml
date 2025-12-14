@@ -2,7 +2,8 @@ resources:
   - wordpress-deployment.yaml
   - wordpress-service.yaml
   - wordpress-pvc.yaml
+  - wordpress-route.yaml
   - mariadb-deployment.yaml
   - mariadb-service.yaml
   - mariadb-pvc.yaml
-  - route-wordpress.yaml
+
