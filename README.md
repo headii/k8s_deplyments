@@ -1,6 +1,6 @@
 # Microshift Lab Setup
 
-Setup  
+Virtualbox VM with RHEL 9.6  
 4 Cores  
 8 GB RAM  
 Disk1 50GB (System)  
@@ -80,6 +80,9 @@ oc bash completion
 ```bash
 echo 'source <(oc completion bash)' >> ~/.bashrc
 ```
+
+
+
 
 openshift-console  
 http://openshift-console.apps.microshift.lab
