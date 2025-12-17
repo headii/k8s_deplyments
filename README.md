@@ -17,8 +17,8 @@ DNS:
 
 
 ## Install Doku
-[Install_Microshit](doc/Install_Microshit.md)
+[Install_Microshift](doc/Install_Microshift.md)
 
-[Install_Microshit_Services](doc/Install_Microshit_Services.md)
+[Install_Microshift_Services](doc/Install_Microshift_Services.md)
 
 [Useful_Links](doc/Useful_Links.md)
