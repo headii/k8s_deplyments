@@ -3,6 +3,8 @@ kind: Route
 metadata:
   name: wordpress
   namespace: wordpress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
 #  host: "wordpress.apps.microshift.lab"
   to:
