@@ -1,4 +1,5 @@
 resources:
+  - argocd-namespace.yaml
   - argocd-install.yaml
   - argocd-route.yaml
 
