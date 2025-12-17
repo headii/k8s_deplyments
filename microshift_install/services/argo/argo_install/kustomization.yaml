@@ -3,7 +3,6 @@ resources:
   - argocd-route.yaml
 
 patches:
-  # JSON 6902 patch
   - target:
       group: apps
       version: v1
@@ -11,12 +10,4 @@ patches:
       name: argocd-redis
     path: patch-argocd-redis-securitycontext.yaml
 
-  # Merge patch inline
-  - target:
-      group: ""
-      version: v1
-      kind: ConfigMap
-      name: argocd-cmd-params-cm
-    patch:
-      data:
-        server.insecure: "true"
+  - path: patch-argocd-cmd-params.yaml
