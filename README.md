@@ -1,6 +1,10 @@
-#WIP
+# WIP
 
-# Microshift Lab Setup
+# Microshift Lab
+
+This is my Microshift 4.20 Lab Setup
+
+## Setup
 
 Virtualbox VM with RHEL 9.7  
 4 Cores  
@@ -12,7 +16,7 @@ DNS:
 *.microshift.lab
 
 
-# Install Microshift
+## Install Microshift
 
 Add subscription
 ```bash
@@ -26,12 +30,12 @@ sudo subscription-manager repos \
     --enable fast-datapath-for-rhel-9-$(uname -m)-rpms
 ```
 
-Set fix Release  
+Set fix RHEL Release  
 ```bash
 sudo subscription-manager release --set=9.7
 ```
 
-Install
+Install packages
 ```bash
 sudo dnf install -y microshift openshift-clients git
 sudo dnf update -y
@@ -58,9 +62,10 @@ Create VG for PV
 ```bash
 sudo pvcreate /dev/sdb
 sudo vgcreate microshift-pv /dev/sdb
+sudo vgdisplay
 ```
 
-Copy Config
+Pull Repo
 ```bash
 git clone https://github.com/headii/k8s_deplyments.git
 cd k8s_deplyments
@@ -68,7 +73,7 @@ cd k8s_deplyments
 
 Copy Config
 ```bash
-sudo cp microshift_config/config.yaml microshift_config/lvmd.yaml /etc/microshift/
+sudo cp microshift_install/config/config.yaml microshift_install/config/lvmd.yaml /etc/microshift/
 ```
 
 Start Service
@@ -76,52 +81,54 @@ Start Service
 sudo systemctl enable --now microshift.service
 ```
 
-Create Config for "oc"
-```bash
-mkdir -p ~/.kube/
-sudo cat /var/lib/microshift/resources/kubeadmin/kubeconfig > ~/.kube/config
-chmod go-r ~/.kube/config
-oc get pods -A
-```
-
 oc bash completion
 ```bash
 echo 'source <(oc completion bash)' >> ~/.bashrc
 ```
 
+Create Config for "oc"    
+```bash
+mkdir -p ~/.kube/
+sudo cat /var/lib/microshift/resources/kubeadmin/kubeconfig > ~/.kube/config
+chmod go-r ~/.kube/config
+oc get pods -A
+```    
+
+
+## Install Microshift Services  
+
+Install Openshift Console
+```bash
+oc apply -k microshift_install/services/openshift-console
+oc get pods -n openshift-console
+```
+
+Get URL from Openshift Console
+```bash
+echo "http://$(oc get route openshift-console -n openshift-console -o jsonpath='{.spec.host}')"
+```
+
 Install ArgoCD
 ```bash
 oc create namespace argocd
-oc apply -f argocd-install.yaml -n argocd
+oc apply -f microshift_install/services/argo/argo_install/argocd-install.yaml -n argocd
 oc get pods -n argocd
 ```
 
-Get Admin Password from ArgoCD
+Get Admin Password from ArgoCD  
 ```bash
 oc get secret argocd-initial-admin-secret -n argocd -o jsonpath={.data.password} | base64 -d
 ```
 
-
+Install App bootstrap-cluster for Argo  
 ```bash
-echo "http://$(oc get route argocd-server -n argocd -o jsonpath='{.spec.host}')"
+oc apply -f microshift_install/services/argo/argo_bootstrap_cluster/bootstrap-cluster.yaml
 ```
 
-Install App bootstrap-cluster for Argo
-```bash
-oc apply -f 0-bootstrap/bootstrap.yaml
-```bash
 
-
-
-openshift-console  
-http://openshift-console.apps.microshift.lab
-
-
-
-##########################  
-Microshift Official doku  
+#### Microshift Official Doku   
 https://docs.redhat.com/en/documentation/red_hat_build_of_microshift/4.20/  
 https://github.com/openshift/microshift/blob/main/docs/user/getting_started.md  
 
-ISO Download:  
+##### ISO Download  
 https://developers.redhat.com/content-gateway/file/rhel/Red_Hat_Enterprise_Linux_9.7/rhel-9.7-x86_64-dvd.iso
