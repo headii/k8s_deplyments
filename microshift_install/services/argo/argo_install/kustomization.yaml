@@ -2,13 +2,22 @@ resources:
   - argocd-install.yaml
   - argocd-route.yaml
 
-patchesJson6902:
+patches:
+  # JSON 6902 patch (like your securityContext removal)
   - target:
       group: apps
       version: v1
       kind: Deployment
       name: argocd-redis
     path: patch-argocd-redis-securitycontext.yaml
+    # optional: behavior: "replace" # default is "merge"
 
-patchesStrategicMerge:
-  - patch-argocd-cmd-params.yaml
+  # Merge patch (like your configmap patch)
+  - target:
+      group: ""  # core API group for ConfigMap
+      version: v1
+      kind: ConfigMap
+      name: argocd-cmd-params-cm
+    patch: |-
+      data:
+        server.insecure: "true"
