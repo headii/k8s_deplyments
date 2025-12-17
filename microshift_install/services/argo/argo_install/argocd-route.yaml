@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: argocd-server
     app.kubernetes.io/part-of: argocd
 spec:
-  host: argocd.apps.microshift01.lab
+  host: argocd.apps.microshift.lab
   to:
     kind: Service
     name: argocd-server
