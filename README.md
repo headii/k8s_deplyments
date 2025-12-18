@@ -4,6 +4,8 @@
 
 This is my Microshift 4.20 Lab Setup
 
+![Alt text](doc/screenshots/Screenshot_Pods.png "Optional title")
+
 ## Setup
 
 Virtualbox VM with RHEL 9.7  
